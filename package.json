@@ -38,6 +38,7 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
+    "camelcase": "^5.3.1"
   },
   "devDependencies": {
     "@types/jest": "^24.0.13",
