@@ -51,6 +51,15 @@ function isUndefined(value: any) {
   return value === undefined;
 }
 
+function firstDefined<T> (...args: T[]): T | undefined {
+  for (const arg of args) {
+    if (arg !== undefined) {
+      return arg;
+    }
+  }
+  return undefined;
+};
+
 function desiredValue(value: string, rule: OptionRule) {
   switch (rule.type) {
     case 'boolean':
@@ -64,7 +73,9 @@ function desiredValue(value: string, rule: OptionRule) {
   }
 }
 
-export function parse(argv: string[], rules: OptionRules, ...bases: object[]) {
+export function parse(
+  argv: string[], rules: OptionRules, ...bases: object[]
+): [object, string[], string[]] {
   const options = {};
   const args: string[] = [];
   const unknownOptions: string[] = [];
@@ -121,7 +132,6 @@ export function parse(argv: string[], rules: OptionRules, ...bases: object[]) {
         const alias = arg[i];
         if (aliases[alias]) {
           currentRule = aliases[alias] as OptionRule;
-          currentRule = aliases[alias] as OptionRule;
           currentOption = aliasesNameMap[alias] as string;
           singleAssign = !currentRule.type.endsWith('[]');
           if (currentRule.type === 'boolean') {
@@ -148,7 +158,18 @@ export function parse(argv: string[], rules: OptionRules, ...bases: object[]) {
         args.push(arg);
       }
     }
-    const rule = rules[arg];
+  }
+  let base = {};
+  if (bases.length) {
+    base = Object.assign({}, ...bases);
+  }
+  const keysOfRules = Object.keys(rules);
+  const lengthOfRules = keysOfRules.length;
+  for (let i = 0; i < lengthOfRules; i++) {
+    const ruleName = keysOfRules[i];
+    if (isUndefined(options[ruleName])) {
+      options[ruleName] = firstDefined(base[ruleName], rules[ruleName].default);
+    }
   }
   return [options, args, unknownOptions];
 };
