@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - v12
+  - v11
+  - v10
+  - v9
+  - v8
+install:
+  - npm install
+  - npm install -g codecov
+script:
+  - npm run test-cov
+  - codecov
