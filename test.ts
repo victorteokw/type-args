@@ -1,5 +1,4 @@
 import { parse } from './src/index';
-import { log } from 'util';
 
 describe('parses value', () => {
   it('works', () => {
