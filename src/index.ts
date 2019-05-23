@@ -44,7 +44,7 @@ interface OptionRules {
 }
 
 interface Options {
-  [key: string]: any
+  [key: string]: boolean | number | string | number[] | string[]
 }
 
 function isUndefined(value: any) {
@@ -78,8 +78,8 @@ function charIsAlphabet(char: string) {
 }
 
 export function parse(
-  argv: string[], rules: OptionRules, ...bases: object[]
-): [object, string[], string[]] {
+  argv: string[], rules: OptionRules, ...bases: Options[]
+): [Options, string[], string[]] {
   const options = {};
   const args: string[] = [];
   const unknownOptions: string[] = [];
