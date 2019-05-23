@@ -44,7 +44,7 @@ interface OptionRules {
 }
 
 interface Options {
-  [key: string]: boolean | number | string | number[] | string[]
+  [key: string]: any
 }
 
 function isUndefined(value: any) {
@@ -69,17 +69,13 @@ function desiredValue(value: string, rule: OptionRule) {
       return value;
     case 'number':
     case 'number[]':
-      return Number(value);
+      return parseFloat(value);
   }
 }
 
-function charIsAlphabet(char: string) {
-  return ((char >= 'A') && (char <= 'Z')) || ((char >= 'a') && (char <= 'z'));
-}
-
 export function parse(
-  argv: string[], rules: OptionRules, ...bases: Options[]
-): [Options, string[], string[]] {
+  argv: string[], rules: OptionRules, ...bases: object[]
+): [object, string[], string[]] {
   const options = {};
   const args: string[] = [];
   const unknownOptions: string[] = [];
@@ -94,10 +90,7 @@ export function parse(
     const arg = argv[i];
     if (arg.startsWith('--')) {
       const [lhs, rhs] = arg.split('=');
-      const option = lhs.substr(2, 3) === 'no-' ?
-        camelCase(lhs.substr(5)) :
-        camelCase(lhs.substr(2));
-      const omittedBooleanRHS = lhs.substr(2, 3) === 'no-' ? false : true;
+      const option = camelCase(lhs.substr(2));
       if (rules[option]) {
         currentOption = option;
         currentRule = rules[option];
@@ -114,7 +107,7 @@ export function parse(
           }
         } else {
           if (currentRule.type === 'boolean') {
-            options[option] = omittedBooleanRHS;
+            options[option] = true;
             currentOption = undefined;
             currentRule = undefined;
             singleAssign = undefined;
@@ -123,10 +116,9 @@ export function parse(
       } else {
         unknownOptions.push(lhs);
       }
-    } else if ((arg[0] === '-') && charIsAlphabet(arg[1])) {
+    } else if (arg.startsWith('-')) {
       if (!generatedAliasesMap) {
-        const ruleNames = Object.keys(rules);
-        for (const ruleName of ruleNames) {
+        for (const ruleName in rules) {
           const rule = rules[ruleName];
           if (rule.alias) {
             aliases[rule.alias] = rule;
@@ -135,16 +127,13 @@ export function parse(
         }
         generatedAliasesMap = true;
       }
-      const argLength = arg.length;
-      for (let j = 1; j < argLength; j++) {
-        const alias = arg[j];
+      const { length } = arg;
+      for (let i = 1; i < length; i++) {
+        const alias = arg[i];
         if (aliases[alias]) {
           currentRule = aliases[alias] as OptionRule;
           currentOption = aliasesNameMap[alias] as string;
           singleAssign = !currentRule.type.endsWith('[]');
-          if (!singleAssign && !options[currentOption as string]) {
-            options[currentOption as string] = [];
-          }
           if (currentRule.type === 'boolean') {
             options[currentOption] = true;
             currentOption = undefined;
