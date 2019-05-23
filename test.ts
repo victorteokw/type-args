@@ -567,7 +567,7 @@ describe('supported flag types', () => {
 
 describe('copies default values for undefined options', () => {
   it('sets true for boolean field', () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['--orms', 'mongoose', 'sequelize'],
       {
         'copyValue': {
@@ -587,11 +587,13 @@ describe('copies default values for undefined options', () => {
       copyValue: true,
       orms: ['mongoose', 'sequelize']
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('sets false for boolean field', () => {
-    const [options, args] = parse(
-      ['model'],
+    const [options, args, unknownOptions] = parse(
+      ['model', '--email'],
       {
         'withUpload': {
           alias: 'u',
@@ -605,28 +607,31 @@ describe('copies default values for undefined options', () => {
       withUpload: false
     });
     expect(args).toEqual(['model']);
+    expect(unknownOptions).toEqual(['--email']);
   });
 
   it('sets empty string for string value', () => {
-    const [options] = parse(
-      ['abc'],
+    const [options, args, unknownOptions] = parse(
+      ['react-native', '--electron'],
       {
-        'yesterday': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
+        'flutter': {
+          alias: 'f',
+          desc: 'Flutter is Google\'s portable UI toolkit for crafting beautiful.',
           type: 'string',
           default: ''
         }
       }
     );
     expect(options).toEqual({
-      yesterday: ''
+      flutter: ''
     });
+    expect(args).toEqual(['react-native']);
+    expect(unknownOptions).toEqual(['--electron']);
   });
 
   it('sets nonempty string for string value', () => {
     const [options, args, unknownOptions] = parse(
-      ['server', '--help'],
+      ['server', '--help', '--nginx'],
       {
         'framework': {
           alias: 'f',
@@ -646,7 +651,7 @@ describe('copies default values for undefined options', () => {
       help: true
     });
     expect(args).toEqual(['server']);
-    expect(unknownOptions).toEqual([]);
+    expect(unknownOptions).toEqual(['--nginx']);
   });
 
   it('sets 0 for number value', () => {
@@ -669,48 +674,41 @@ describe('copies default values for undefined options', () => {
   });
 
   it('sets positive number for value', () => {
-    const [options] = parse(
-      ['--yesterday=9', '-q', '9'],
+    const [options, args, unknownOptions] = parse(
+      ['css', 'html'],
       {
-        'yesterday': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
-          type: 'number'
-        },
-        'quiet': {
-          alias: 'q',
-          desc: 'the quiet one.',
-          type: 'number'
+        'javascript': {
+          alias: 'e',
+          desc: ' constantly updated javascript.',
+          type: 'number',
+          default: 2018
         }
       }
     );
     expect(options).toEqual({
-      yesterday: 9,
-      quiet: 9
+      javascript: 2018
     });
+    expect(args).toEqual(['css', 'html']);
+    expect(unknownOptions).toEqual([]);
   });
 
-  // TODO: error "quiet": undefined -q=-9 or '-q', '-9'
   it('sets negative number for value', () => {
-    const [options] = parse(
-      ['--yesterday=-9', '-q=-9'],
+    const [options, args, unknownOptions] = parse(
+      ['humidity', '--decibel'],
       {
-        'yesterday': {
+        'centigrade': {
           alias: 'y',
-          desc: 'oh I believe in yesterday.',
-          type: 'number'
+          desc: 'It\'s really cold here.',
+          type: 'number',
+          default: -10
         },
-        'quiet': {
-          alias: 'q',
-          desc: 'the quiet one.',
-          type: 'number'
-        }
       }
     );
-    // expect(options).toEqual({
-    //   yesterday: -9,
-    //   quiet: -9
-    // });
+    expect(options).toEqual({
+      centigrade: -10
+    });
+    expect(args).toEqual(['humidity']);
+    expect(unknownOptions).toEqual(['--decibel']);
   });
 });
 
