@@ -142,6 +142,9 @@ export function parse(
           currentRule = aliases[alias] as OptionRule;
           currentOption = aliasesNameMap[alias] as string;
           singleAssign = !currentRule.type.endsWith('[]');
+          if (!singleAssign && !options[currentOption as string]) {
+            options[currentOption as string] = [];
+          }
           if (currentRule.type === 'boolean') {
             options[currentOption] = true;
             currentOption = undefined;

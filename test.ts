@@ -460,16 +460,16 @@ describe('supported value types', () => {
 
   it('number array with multiple following values', () => {
     const [options] = parse(
-      ['--date', '1314', '1024', '--number', '9527', '777'],
+      ['--date', '1314', '1024', '-n', '9527', '777'],
       {
         'date': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
+          alias: 'd',
+          desc: 'the magic dates.',
           type: 'number[]'
         },
         'number': {
-          alias: 'q',
-          desc: 'the quiet one.',
+          alias: 'n',
+          desc: 'the magic numbers.',
           type: 'number[]'
         }
       }
@@ -482,23 +482,23 @@ describe('supported value types', () => {
 
   it('string array with multiple following values', () => {
     const [options] = parse(
-      ['--city', 'Paris', 'London', '--country', 'France', 'England'],
+      ['-c', 'Paris', 'London', '--country', 'France', 'UK'],
       {
         'city': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
+          alias: 'c',
+          desc: 'cities list.',
           type: 'string[]'
         },
         'country': {
-          alias: 'q',
-          desc: 'the quiet one.',
+          alias: 'C',
+          desc: 'countries list.',
           type: 'string[]'
         }
       }
     );
     expect(options).toEqual({
       'city': ['Paris', 'London'],
-      'country': ['France', 'England']
+      'country': ['France', 'UK']
     });
   });
 });
