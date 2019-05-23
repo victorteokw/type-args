@@ -1,4 +1,4 @@
-typed-args
+type-args
 ==============
 [![NPM version][npm-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
@@ -10,7 +10,7 @@ typed-args
 
 The node.js options parser that plays well with TypeScript. To fetch the
 TypeScript interface from the option rules is extremely hard. However,
-typed-args tries its best to make coding experience of command line option
+type-args tries its best to make coding experience of command line option
 parsing more intelligent.
 
 This is a minimalist implementation. And its algorithms are optimized.
@@ -21,7 +21,7 @@ It's without annoying command interfaces.
 Install this package with `npm`.
 
 ```bash
-npm i typed-args -s
+npm i type-args -s
 ```
 
 ## Usage
@@ -64,7 +64,7 @@ descriptor objects as values. The descriptor object has 4 values.
 ### Parsing ARGV
 
 ```typescript
-import { parse } from 'typed-args';
+import { parse } from 'type-args';
 
 const [options, args, unknownOptions] = parse(process.argv, rules);
 ```
@@ -84,7 +84,7 @@ like this:
 default value < package.json < .rcfile < user command line arguments
 ```
 
-typed-args does what you want by accepting the ...third arguments.
+type-args does what you want by accepting the ...third arguments.
 
 ## Examples
 
@@ -94,17 +94,17 @@ typed-args does what you want by accepting the ...third arguments.
 
 MIT © [Zhang Kai Yu][license-url]
 
-[npm-image]: https://img.shields.io/npm/v/typed-args.svg?style=flat-square&color=ff69b4&logo=react
-[npm-url]: https://npmjs.org/package/typed-args
-[travis-image]: https://img.shields.io/travis/zhangkaiyulw/typed-args.svg?style=flat-square&color=blue&logo=travis
-[travis-url]: https://travis-ci.org/zhangkaiyulw/typed-args
-[cov-image]: https://img.shields.io/codecov/c/github/zhangkaiyulw/typed-args/master.svg?style=flat-square&logo=codecov
-[cov-url]: https://codecov.io/gh/zhangkaiyulw/typed-args
-[daviddm-image]: https://img.shields.io/david/zhangkaiyulw/typed-args.svg?style=flat-square
-[daviddm-url]: https://david-dm.org/zhangkaiyulw/typed-args
-[daviddm-image-dev]: https://img.shields.io/david/dev/zhangkaiyulw/typed-args.svg?style=flat-square
-[daviddm-url-dev]: https://david-dm.org/zhangkaiyulw/typed-args?type=dev
-[license-image]: https://img.shields.io/github/license/zhangkaiyulw/typed-args.svg?style=flat-square
-[license-url]: https://github.com/zhangkaiyulw/typed-args/blob/master/LICENSE
+[npm-image]: https://img.shields.io/npm/v/type-args.svg?style=flat-square&color=ff69b4&logo=react
+[npm-url]: https://npmjs.org/package/type-args
+[travis-image]: https://img.shields.io/travis/zhangkaiyulw/type-args.svg?style=flat-square&color=blue&logo=travis
+[travis-url]: https://travis-ci.org/zhangkaiyulw/type-args
+[cov-image]: https://img.shields.io/codecov/c/github/zhangkaiyulw/type-args/master.svg?style=flat-square&logo=codecov
+[cov-url]: https://codecov.io/gh/zhangkaiyulw/type-args
+[daviddm-image]: https://img.shields.io/david/zhangkaiyulw/type-args.svg?style=flat-square
+[daviddm-url]: https://david-dm.org/zhangkaiyulw/type-args
+[daviddm-image-dev]: https://img.shields.io/david/dev/zhangkaiyulw/type-args.svg?style=flat-square
+[daviddm-url-dev]: https://david-dm.org/zhangkaiyulw/type-args?type=dev
+[license-image]: https://img.shields.io/github/license/zhangkaiyulw/type-args.svg?style=flat-square
+[license-url]: https://github.com/zhangkaiyulw/type-args/blob/master/LICENSE
 [pr-image]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
-[pr-url]: https://github.com/zhangkaiyulw/typed-args/blob/master/CONTRIBUTING.md
+[pr-url]: https://github.com/zhangkaiyulw/type-args/blob/master/CONTRIBUTING.md
