@@ -122,7 +122,8 @@ export function parse(
       }
     } else if ((arg[0] === '-') && charIsAlphabet(arg[1])) {
       if (!generatedAliasesMap) {
-        for (const ruleName in rules) {
+        const ruleNames = Object.keys(rules);
+        for (const ruleName of ruleNames) {
           const rule = rules[ruleName];
           if (rule.alias) {
             aliases[rule.alias] = rule;
@@ -131,9 +132,9 @@ export function parse(
         }
         generatedAliasesMap = true;
       }
-      const { length } = arg;
-      for (let i = 1; i < length; i++) {
-        const alias = arg[i];
+      const argLength = arg.length;
+      for (let j = 1; j < argLength; j++) {
+        const alias = arg[j];
         if (aliases[alias]) {
           currentRule = aliases[alias] as OptionRule;
           currentOption = aliasesNameMap[alias] as string;
