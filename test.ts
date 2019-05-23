@@ -107,14 +107,15 @@ describe('supported value types', () => {
     expect(unknownOptions).toEqual([]);
   });
 
-  it.skip("boolean with prefixed 'no'", () => {
+  it("boolean with prefixed 'no'", () => {
     const [options, args, unknownOptions] = parse(
       ['output', '--no-verbose'],
       {
         'verbose': {
           alias: 'V',
           desc: 'verbose output.',
-          type: 'boolean'
+          type: 'boolean',
+          default: true
         }
       }
     );

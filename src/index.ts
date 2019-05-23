@@ -94,7 +94,10 @@ export function parse(
     const arg = argv[i];
     if (arg.startsWith('--')) {
       const [lhs, rhs] = arg.split('=');
-      const option = camelCase(lhs.substr(2));
+      const option = lhs.substr(2, 3) === 'no-' ?
+        camelCase(lhs.substr(5)) :
+        camelCase(lhs.substr(2));
+      const omittedBooleanRHS = lhs.substr(2, 3) === 'no-' ? false : true;
       if (rules[option]) {
         currentOption = option;
         currentRule = rules[option];
@@ -111,7 +114,7 @@ export function parse(
           }
         } else {
           if (currentRule.type === 'boolean') {
-            options[option] = true;
+            options[option] = omittedBooleanRHS;
             currentOption = undefined;
             currentRule = undefined;
             singleAssign = undefined;
