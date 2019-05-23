@@ -1,88 +1,100 @@
 import { parse } from './src/index';
 
 describe('does parsing', () => {
-  it('puts known options into first return value', () => {
+  it('puts known options into the first return value', () => {
     const [options, args, unknownOptions] = parse(
-      ['--access', '-c', 'memory'],
+      ['--silent', '-c', 'memory'],
       {
-        'access': {
-          alias: 'y',
-          desc: 'a way of entering or reaching a place.',
+        'silent': {
+          alias: 's',
+          desc: 'silent output.',
           type: 'boolean'
         },
         'cache': {
           alias: 'c',
-          desc: 'from memory cache.',
+          desc: 'where to cache data.',
           type: 'string'
         }
       }
     )
     expect(options).toEqual({
-      access: true,
+      silent: true,
       cache: 'memory'
     });
     expect(args).toEqual([]);
     expect(unknownOptions).toEqual([]);
   });
 
-  it('puts arg tokens into second return value', () => {
+  it('puts arg tokens into the second return value', () => {
     const [options, args, unknownOptions] = parse(
-      ['--bugs', 'one', 'two', '-c'],
+      ['token1', 'token2'],
       {}
     )
     expect(options).toEqual({});
-    expect(args).toEqual(['one', 'two']);
-    expect(unknownOptions).toEqual(['--bugs', '-c']);
+    expect(args).toEqual(['token1', 'token2']);
+    expect(unknownOptions).toEqual([]);
   });
 
-  it('puts unknown options into third return value', () => {
+  it('puts unknown options into the third return value', () => {
     const [options, args, unknownOptions] = parse(
       ['--i-am-unknown', '-v'],
-      {}
+      {
+        'silent': {
+          alias: 's',
+          desc: 'silent output.',
+          type: 'boolean'
+        },
+        'cache': {
+          alias: 'c',
+          desc: 'where to cache data.',
+          type: 'string'
+        }
+      }
     )
     expect(options).toEqual({});
     expect(args).toEqual([]);
     expect(unknownOptions).toEqual(['--i-am-unknown', '-v']);
   });
 
-  it('works', () => {
-    const [options, args] = parse(
-      ['one', '--yesterday', 'two', '-q', 'three'],
+  it('puts correct tokens into correct return values', () => {
+    const [options, args, unknownOptions] = parse(
+      ['resource', '--orm', 'typeorm', '--silent', 'User', '--wrongly'],
       {
-        'yesterday': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
-          type: 'boolean'
-        },
-        'quiet': {
-          alias: 'q',
-          desc: 'the quiet one.',
+        'orm': {
+          alias: 'o',
+          desc: 'which orm to use.',
           type: 'string'
+        },
+        'silent': {
+          alias: 's',
+          desc: 'whether silent output.',
+          type: 'boolean'
         }
       }
     );
     expect(options).toEqual({
-      yesterday: true,
-      quiet: 'three'
+      orm: 'typeorm',
+      silent: true
     });
-    expect(args).toEqual(['one', 'two']);
+    expect(args).toEqual(['resource', 'User']);
+    expect(unknownOptions).toEqual(['--wrongly']);
   });
 
 });
 
 describe('supported value types', () => {
   it('boolean without following argument', () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['--stars', '-q'],
       {
         'stars': {
           alias: 's',
-          desc: 'oh I believe in yesterday.',
+          desc: 'do you like stars?',
           type: 'boolean'
         },
         'quiet': {
           alias: 'q',
-          desc: 'the quiet one.',
+          desc: 'quiet watching.',
           type: 'boolean'
         }
       }
@@ -91,50 +103,51 @@ describe('supported value types', () => {
       stars: true,
       quiet: true,
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 
-  it.skip("boolean with prefixed 'no'", () => {
-    const [options] = parse(
-      ['--no-stars', '--no-quiet'],
+  it("boolean with prefixed 'no'", () => {
+    const [options, args, unknownOptions] = parse(
+      ['output', '--no-verbose'],
       {
-        'no-stars': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
-          type: 'boolean'
-        },
-        'no-quiet': {
-          alias: 'q',
-          desc: 'the quiet one.',
-          type: 'boolean'
+        'verbose': {
+          alias: 'V',
+          desc: 'verbose output.',
+          type: 'boolean',
+          default: true
         }
       }
     );
     expect(options).toEqual({
-      'no-stars': undefined,
-      'no-quiet': undefined
+      'verbose': false
     });
+    expect(args).toEqual(['output']);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('boolean with rhs true', () => {
-    const [options] = parse(
-      ['--stars=true', '--moon=true'],
+    const [options, args, unknownOptions] = parse(
+      ['seed', '--verbose=true', '--dry-run=true'],
       {
-        'stars': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
+        'verbose': {
+          alias: 'V',
+          desc: 'verbose output.',
           type: 'boolean'
         },
-        'moon': {
-          alias: 'q',
-          desc: 'the quiet one.',
+        'dryRun': {
+          alias: 'd',
+          desc: 'only dry run.',
           type: 'boolean'
         }
       }
     );
     expect(options).toEqual({
-      'stars': true,
-      'moon': true
+      'verbose': true,
+      'dryRun': true
     });
+    expect(args).toEqual(['seed']);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('boolean with rhs false', () => {
@@ -181,18 +194,18 @@ describe('supported value types', () => {
     });
   });
 
-  it.skip('number with rhs hexadecimal value', () => {
+  it('number with rhs hexadecimal value', () => {
     const [options] = parse(
       ['--starfish=0x522', '--hippocampus=0x400'],
       {
         'starfish': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
+          alias: 's',
+          desc: 'who is starfish.',
           type: 'number'
         },
         'hippocampus': {
-          alias: 'q',
-          desc: 'the quiet one.',
+          alias: 'h',
+          desc: 'what is hippocampus.',
           type: 'number'
         }
       }
@@ -208,13 +221,13 @@ describe('supported value types', () => {
       ['--starfish=1314', '--hippocampus=1024'],
       {
         'starfish': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
+          alias: 's',
+          desc: 'who is starfish.',
           type: 'number'
         },
         'hippocampus': {
-          alias: 'q',
-          desc: 'the quiet one.',
+          alias: 'h',
+          desc: 'what is hippocampus.',
           type: 'number'
         }
       }
@@ -230,13 +243,13 @@ describe('supported value types', () => {
       ['--starfish=0o2442', '--hippocampus=0o2000'],
       {
         'starfish': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
+          alias: 's',
+          desc: 'who is starfish.',
           type: 'number'
         },
         'hippocampus': {
-          alias: 'q',
-          desc: 'the quiet one.',
+          alias: 'h',
+          desc: 'what is hippocampus.',
           type: 'number'
         }
       }
@@ -274,13 +287,13 @@ describe('supported value types', () => {
       ['--starfish=-1314', '--hippocampus=-1024'],
       {
         'starfish': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
+          alias: 's',
+          desc: 'who is starfish.',
           type: 'number'
         },
         'hippocampus': {
-          alias: 'q',
-          desc: 'the quiet one.',
+          alias: 'h',
+          desc: 'what is hippocampus.',
           type: 'number'
         }
       }
@@ -296,13 +309,13 @@ describe('supported value types', () => {
       ['--starfish', '0x522', '--hippocampus', '0x400'],
       {
         'starfish': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
+          alias: 's',
+          desc: 'who is starfish.',
           type: 'number'
         },
         'hippocampus': {
-          alias: 'q',
-          desc: 'the quiet one.',
+          alias: 'h',
+          desc: 'what is hippocampus.',
           type: 'number'
         }
       }
@@ -318,13 +331,13 @@ describe('supported value types', () => {
       ['--starfish', '1314', '--hippocampus', '1024'],
       {
         'starfish': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
+          alias: 's',
+          desc: 'who is starfish.',
           type: 'number'
         },
         'hippocampus': {
-          alias: 'q',
-          desc: 'the quiet one.',
+          alias: 'h',
+          desc: 'what is hippocampus.',
           type: 'number'
         }
       }
@@ -340,13 +353,13 @@ describe('supported value types', () => {
       ['--starfish', '0o2442', '--hippocampus', '0o2000'],
       {
         'starfish': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
+          alias: 's',
+          desc: 'who is starfish.',
           type: 'number'
         },
         'hippocampus': {
-          alias: 'q',
-          desc: 'the quiet one.',
+          alias: 'h',
+          desc: 'what is hippocampus.',
           type: 'number'
         }
       }
@@ -362,13 +375,13 @@ describe('supported value types', () => {
       ['--starfish', '0b10100100010', '--hippocampus', '0b10000000000'],
       {
         'starfish': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
+          alias: 's',
+          desc: 'who is starfish.',
           type: 'number'
         },
         'hippocampus': {
-          alias: 'q',
-          desc: 'the quiet one.',
+          alias: 'h',
+          desc: 'what is hippocampus.',
           type: 'number'
         }
       }
@@ -384,13 +397,13 @@ describe('supported value types', () => {
       ['--starfish', '-1314', '--hippocampus', '-1024'],
       {
         'starfish': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
+          alias: 's',
+          desc: 'who is starfish.',
           type: 'number'
         },
         'hippocampus': {
-          alias: 'q',
-          desc: 'the quiet one.',
+          alias: 'h',
+          desc: 'what is hippocampus.',
           type: 'number'
         }
       }
@@ -447,16 +460,16 @@ describe('supported value types', () => {
 
   it('number array with multiple following values', () => {
     const [options] = parse(
-      ['--date', '1314', '1024', '--number', '9527', '777'],
+      ['--date', '1314', '1024', '-n', '9527', '777'],
       {
         'date': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
+          alias: 'd',
+          desc: 'the magic dates.',
           type: 'number[]'
         },
         'number': {
-          alias: 'q',
-          desc: 'the quiet one.',
+          alias: 'n',
+          desc: 'the magic numbers.',
           type: 'number[]'
         }
       }
@@ -469,23 +482,23 @@ describe('supported value types', () => {
 
   it('string array with multiple following values', () => {
     const [options] = parse(
-      ['--city', 'Paris', 'London', '--country', 'France', 'England'],
+      ['-c', 'Paris', 'London', '--country', 'France', 'UK'],
       {
         'city': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
+          alias: 'c',
+          desc: 'cities list.',
           type: 'string[]'
         },
         'country': {
-          alias: 'q',
-          desc: 'the quiet one.',
+          alias: 'C',
+          desc: 'countries list.',
           type: 'string[]'
         }
       }
     );
     expect(options).toEqual({
       'city': ['Paris', 'London'],
-      'country': ['France', 'England']
+      'country': ['France', 'UK']
     });
   });
 });
@@ -555,117 +568,104 @@ describe('supported flag types', () => {
 describe('copies default values for undefined options', () => {
   it('sets true for boolean field', () => {
     const [options] = parse(
-      ['--yesterday=true', '-q', 'true'],
+      ['--orms', 'mongoose', 'sequelize'],
       {
-        'yesterday': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
-          type: 'boolean'
+        'copyValue': {
+          alias: 'c',
+          desc: 'whether to copy value.',
+          type: 'boolean',
+          default: true
         },
-        'quiet': {
-          alias: 'q',
-          desc: 'the quiet one.',
-          type: 'boolean'
+        'orms': {
+          alias: 'o',
+          desc: 'supported orms.',
+          type: 'string[]'
         }
       }
     );
     expect(options).toEqual({
-      yesterday: true,
-      quiet: true
+      copyValue: true,
+      orms: ['mongoose', 'sequelize']
     });
   });
 
-  // TODO: error: "quiet": true
   it('sets false for boolean field', () => {
-    const [options] = parse(
-      ['--yesterday=false', '--quiet', 'false'],
+    const [options, args] = parse(
+      ['model'],
       {
-        'yesterday': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
-          type: 'boolean'
-        },
-        'quiet': {
-          alias: 'q',
-          desc: 'the quiet one.',
-          type: 'boolean'
-        }
-      }
-    );
-    // expect(options).toEqual({
-    //   yesterday: false,
-    //   quiet: false
-    // });
-  });
-
-  // TODO: error 
-  // '--yesterday=' or '--yesterday' => "yesterday": undefined
-  // "--yesterday=''" => "yesterday": "''"
-  // '--yesterday=""' => "yesterday": "\"\"",
-  it('sets empty string for string value', () => {
-    const [options] = parse(
-      ['--yesterday=""', '-q', ''],
-      {
-        'yesterday': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
-          type: 'string'
-        },
-        'quiet': {
-          alias: 'q',
-          desc: 'the quiet one.',
-          type: 'string'
+        'withUpload': {
+          alias: 'u',
+          desc: 'whether create paired uploader.',
+          type: 'boolean',
+          default: false
         }
       }
     );
     expect(options).toEqual({
-      yesterday: '',
-      quiet: ''
+      withUpload: false
+    });
+    expect(args).toEqual(['model']);
+  });
+
+  it('sets empty string for string value', () => {
+    const [options] = parse(
+      ['abc'],
+      {
+        'yesterday': {
+          alias: 'y',
+          desc: 'oh I believe in yesterday.',
+          type: 'string',
+          default: ''
+        }
+      }
+    );
+    expect(options).toEqual({
+      yesterday: ''
     });
   });
 
   it('sets nonempty string for string value', () => {
-    const [options] = parse(
-      ['--yesterday=one', '-q', 'two'],
+    const [options, args, unknownOptions] = parse(
+      ['server', '--help'],
       {
-        'yesterday': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
-          type: 'string'
+        'framework': {
+          alias: 'f',
+          desc: 'which framework to use.',
+          type: 'string',
+          default: 'koa'
         },
-        'quiet': {
-          alias: 'q',
-          desc: 'the quiet one.',
-          type: 'string'
+        'help': {
+          alias: 'h',
+          desc: 'display help.',
+          type: 'boolean'
         }
       }
     );
     expect(options).toEqual({
-      yesterday: 'one',
-      quiet: 'two'
+      framework: 'koa',
+      help: true
     });
+    expect(args).toEqual(['server']);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('sets 0 for number value', () => {
-    const [options] = parse(
-      ['--yesterday=0', '-q', '0'],
+    const [options, args, unknownOptions] = parse(
+      ['out'],
       {
-        'yesterday': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
-          type: 'number'
-        },
-        'quiet': {
-          alias: 'q',
-          desc: 'the quiet one.',
-          type: 'number'
+        'level': {
+          alias: 'l',
+          desc: 'output level.',
+          type: 'number',
+          default: 0
         }
       }
     );
     expect(options).toEqual({
-      yesterday: 0,
-      quiet: 0
+      level: 0
     });
+    expect(args).toEqual(['out']);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('sets positive number for value', () => {
@@ -716,72 +716,80 @@ describe('copies default values for undefined options', () => {
 
 describe('merges provided options', () => {
   it('the latter has precedence over the former', () => {
-    const [options] = parse(
-      ['--yesterday=true', '--yesterday=false', '-q', 'one', '-q', 'two'],
+    const [options, args, unknownOptions] = parse(
+      [],
       {
-        'yesterday': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
+        useTypeScript: {
+          desc: 'whether uses TypeScript.',
           type: 'boolean'
         },
-        'quiet': {
-          alias: 'q',
-          desc: 'the quiet one.',
-          type: 'string'
+        useKoa: {
+          desc: 'whether uses Koa.',
+          type: 'boolean'
+        },
+        useJsx: {
+          desc: 'whether uses JSX.',
+          type: 'boolean'
         }
+      },
+      {
+        useTypeScript: false,
+        useKoa: true
+      },
+      {
+        useKoa: false,
+        useJsx: true
       }
     );
     expect(options).toEqual({
-      yesterday: false,
-      quiet: 'two'
+      useTypeScript: false,
+      useKoa: false,
+      useJsx: true
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 
-  // TODO: error quiet: true, args ['false']
   it('provided options has precedence over default value', () => {
-    const [options, args] = parse(
-      ['--yesterday=false', '--quiet', 'false'],
+    const [options, args, unknownOptions] = parse(
+      [],
       {
-        'yesterday': {
+        'useTypeScript': {
           alias: 'y',
-          desc: 'oh I believe in yesterday.',
-          type: 'boolean'
-        },
-        'quiet': {
-          alias: 'q',
-          desc: 'the quiet one.',
-          type: 'boolean'
+          desc: 'whether use TypeScript.',
+          type: 'boolean',
+          default: true
         }
-      }
-    );
-    // expect(options).toEqual({
-    //   yesterday: false,
-    //   quiet: false
-    // });
-    // expect(args).toEqual([]);
-  });
-
-  // TODO: precedence over？
-  it('argv has precedence over provided options', () => {
-    const [options, args] = parse(
-      ['yesterday', '--yesterday', 'quiet', '-q', 'three'],
+      },
       {
-        'yesterday': {
-          alias: 'y',
-          desc: 'oh I believe in yesterday.',
-          type: 'string'
-        },
-        'quiet': {
-          alias: 'q',
-          desc: 'the quiet one.',
-          type: 'string'
-        }
+        useTypeScript: false
       }
     );
     expect(options).toEqual({
-      yesterday: 'quiet',
-      quiet: 'three'
+      useTypeScript: false
     });
-    expect(args).toEqual(['yesterday']);
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
+  });
+
+  it('argv has precedence over provided options', () => {
+    const [options, args, unknownOptions] = parse(
+      ['-f', './index.jsx'],
+      {
+        'file': {
+          alias: 'f',
+          desc: 'the file to be processed.',
+          type: 'string'
+        }
+      },
+      {
+        'file': './index.js'
+      }
+    );
+    expect(options).toEqual({
+      file: './index.jsx'
+    });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 });

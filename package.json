@@ -1,7 +1,7 @@
 {
-  "name": "typed-args",
-  "version": "1.0.0",
-  "description": "",
+  "name": "type-args",
+  "version": "0.1.0",
+  "description": "The node.js command line options parser which plays well with TypeScript.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zhangkaiyulw/typed-args.git"
+    "url": "git+https://github.com/zhangkaiyulw/type-args.git"
   },
   "keywords": [
     "args",
@@ -32,9 +32,9 @@
   "author": "Zhang Kaiyu",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/zhangkaiyulw/typed-args/issues"
+    "url": "https://github.com/zhangkaiyulw/type-args/issues"
   },
-  "homepage": "https://github.com/zhangkaiyulw/typed-args#readme",
+  "homepage": "https://github.com/zhangkaiyulw/type-args#readme",
   "engines": {
     "node": ">=8.0.0"
   },
