@@ -69,8 +69,12 @@ function desiredValue(value: string, rule: OptionRule) {
       return value;
     case 'number':
     case 'number[]':
-      return parseFloat(value);
+      return Number(value);
   }
+}
+
+function charIsAlphabet(char: string) {
+  return ((char >= 'A') && (char <= 'Z')) || ((char >= 'a') && (char <= 'z'));
 }
 
 export function parse(
@@ -116,7 +120,7 @@ export function parse(
       } else {
         unknownOptions.push(lhs);
       }
-    } else if (arg.startsWith('-')) {
+    } else if ((arg[0] === '-') && charIsAlphabet(arg[1])) {
       if (!generatedAliasesMap) {
         for (const ruleName in rules) {
           const rule = rules[ruleName];
