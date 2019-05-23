@@ -151,7 +151,7 @@ describe('supported value types', () => {
   });
 
   it('boolean with rhs false', () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['--stars=false', '--moon=false'],
       {
         'stars': {
@@ -170,10 +170,12 @@ describe('supported value types', () => {
       'stars': false,
       'moon': false
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 
   it("boolean with any value that not equal to 'false'", () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['--stars=shape', '--moon=circular'],
       {
         'stars': {
@@ -192,10 +194,12 @@ describe('supported value types', () => {
       'stars': true,
       'moon': true
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('number with rhs hexadecimal value', () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['--starfish=0x522', '--hippocampus=0x400'],
       {
         'starfish': {
@@ -214,10 +218,12 @@ describe('supported value types', () => {
       'starfish': 0x522,
       'hippocampus': 0x400
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('number with rhs decimal value', () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['--starfish=1314', '--hippocampus=1024'],
       {
         'starfish': {
@@ -236,10 +242,12 @@ describe('supported value types', () => {
       'starfish': 1314,
       'hippocampus': 1024
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('number with rhs octal value', () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['--starfish=0o2442', '--hippocampus=0o2000'],
       {
         'starfish': {
@@ -258,10 +266,12 @@ describe('supported value types', () => {
       'starfish': 0o2442,
       'hippocampus': 0o2000
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('number with rhs binary value', () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['--starfish=0b10100100010', '--hippocampus=0b10000000000'],
       {
         'starfish': {
@@ -280,10 +290,12 @@ describe('supported value types', () => {
       'starfish': 0b10100100010,
       'hippocampus': 0b10000000000
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('number with rhs negative value', () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['--starfish=-1314', '--hippocampus=-1024'],
       {
         'starfish': {
@@ -302,10 +314,12 @@ describe('supported value types', () => {
       'starfish': -1314,
       'hippocampus': -1024
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('number with following hexadecimal value', () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['--starfish', '0x522', '--hippocampus', '0x400'],
       {
         'starfish': {
@@ -324,10 +338,12 @@ describe('supported value types', () => {
       'starfish': 0x522,
       'hippocampus': 0x400
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('number with following decimal value', () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['--starfish', '1314', '--hippocampus', '1024'],
       {
         'starfish': {
@@ -346,10 +362,12 @@ describe('supported value types', () => {
       'starfish': 1314,
       'hippocampus': 1024
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('number with following octal value', () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['--starfish', '0o2442', '--hippocampus', '0o2000'],
       {
         'starfish': {
@@ -368,10 +386,12 @@ describe('supported value types', () => {
       'starfish': 0o2442,
       'hippocampus': 0o2000
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('number with following binary value', () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['--starfish', '0b10100100010', '--hippocampus', '0b10000000000'],
       {
         'starfish': {
@@ -390,10 +410,12 @@ describe('supported value types', () => {
       'starfish': 0b10100100010,
       'hippocampus': 0b10000000000
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('number with following negative value', () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['--starfish', '-1314', '--hippocampus', '-1024'],
       {
         'starfish': {
@@ -412,10 +434,12 @@ describe('supported value types', () => {
       'starfish': -1314,
       'hippocampus': -1024
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('string with rhs value', () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['--city=paris', '--country=france'],
       {
         'city': {
@@ -434,10 +458,12 @@ describe('supported value types', () => {
       'city': 'paris',
       'country': 'france'
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('string with following value', () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['--city', 'paris', '--country', 'france'],
       {
         'city': {
@@ -456,10 +482,12 @@ describe('supported value types', () => {
       'city': 'paris',
       'country': 'france'
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('number array with multiple following values', () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['--date', '1314', '1024', '-n', '9527', '777'],
       {
         'date': {
@@ -478,10 +506,12 @@ describe('supported value types', () => {
       'date': [1314, 1024],
       'number': [9527, 777]
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('string array with multiple following values', () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['-c', 'Paris', 'London', '--country', 'France', 'UK'],
       {
         'city': {
@@ -500,12 +530,14 @@ describe('supported value types', () => {
       'city': ['Paris', 'London'],
       'country': ['France', 'UK']
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 });
 
 describe('supported flag types', () => {
   it('flag with two dashes', () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['--yesterday'],
       {
         'yesterday': {
@@ -518,10 +550,12 @@ describe('supported flag types', () => {
     expect(options).toEqual({
       yesterday: true
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('flag with single dash', () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['-q', 'three'],
       {
         'quiet': {
@@ -534,10 +568,12 @@ describe('supported flag types', () => {
     expect(options).toEqual({
       quiet: 'three'
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 
   it('flag with multiple alias in single dash', () => {
-    const [options] = parse(
+    const [options, args, unknownOptions] = parse(
       ['-hvs', 'three'],
       {
         'help': {
@@ -562,6 +598,8 @@ describe('supported flag types', () => {
       version: true,
       silent: 'three'
     });
+    expect(args).toEqual([]);
+    expect(unknownOptions).toEqual([]);
   });
 });
 
