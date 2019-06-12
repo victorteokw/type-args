@@ -78,10 +78,11 @@ function charIsAlphabet(char: string) {
 }
 
 export function parse(
-  argv: string[] = process.argv.slice(0),
+  argv: string[] = process.argv,
   rules: OptionRules = {},
   ...bases: Options[]
 ): [Options, string[], string[]] {
+  argv = argv.slice(0);
   if (argv[0] === process.execPath) argv.splice(0, 1);
   if (argv[0] === process.argv[1]) argv.splice(0, 1);
   const options = {};
