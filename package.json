@@ -1,6 +1,6 @@
 {
   "name": "type-args",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The node.js command line options parser which plays well with TypeScript.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

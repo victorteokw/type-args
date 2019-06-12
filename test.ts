@@ -1,4 +1,39 @@
 import { parse } from './src/index';
+console.log(process.argv);
+console.log(process.execArgv);
+console.log(process.execPath);
+describe('purify argv', () => {
+  it("removes the first argument if it's execPath", () => {
+    const [options, args, unknownOptions] = parse(
+      [process.execPath, 'dan', 'gan', 'ron', 'pa'],
+      {}
+    );
+    expect(options).toEqual({});
+    expect(args).toEqual(['dan', 'gan', 'ron', 'pa']);
+    expect(unknownOptions).toEqual([]);
+  });
+
+  it("removes the first argument if it's the script file", () => {
+    const [options, args, unknownOptions] = parse(
+      [process.argv[1], 'dan', 'gan', 'ron', 'pa'],
+      {}
+    );
+    expect(options).toEqual({});
+    expect(args).toEqual(['dan', 'gan', 'ron', 'pa']);
+    expect(unknownOptions).toEqual([]);
+  });
+
+  it("removes the first two arguments if they're execPath and script file",
+  () => {
+    const [options, args, unknownOptions] = parse(
+      [process.argv[0], process.argv[1], 'dan', 'gan', 'ron', 'pa'],
+      {}
+    );
+    expect(options).toEqual({});
+    expect(args).toEqual(['dan', 'gan', 'ron', 'pa']);
+    expect(unknownOptions).toEqual([]);
+  });
+});
 
 describe('does parsing', () => {
   it('puts known options into the first return value', () => {

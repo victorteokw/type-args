@@ -37,13 +37,13 @@ interface NumberArrayOptionRule {
 
 type SOptionRule = BooleanOptionRule | StringOptionRule | NumberOptionRule;
 type MOptionRule = StringArrayOptionRule | NumberArrayOptionRule;
-type OptionRule = SOptionRule | MOptionRule;
+export type OptionRule = SOptionRule | MOptionRule;
 
-interface OptionRules {
+export interface OptionRules {
   [key: string]: OptionRule
 }
 
-interface Options {
+export interface Options {
   [key: string]: boolean | number | string | number[] | string[]
 }
 
@@ -78,8 +78,12 @@ function charIsAlphabet(char: string) {
 }
 
 export function parse(
-  argv: string[], rules: OptionRules, ...bases: Options[]
+  argv: string[] = process.argv.slice(0),
+  rules: OptionRules = {},
+  ...bases: Options[]
 ): [Options, string[], string[]] {
+  if (argv[0] === process.execPath) argv.splice(0, 1);
+  if (argv[0] === process.argv[1]) argv.splice(0, 1);
   const options = {};
   const args: string[] = [];
   const unknownOptions: string[] = [];
