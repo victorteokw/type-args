@@ -1,7 +1,5 @@
 import { parse } from './src/index';
-console.log(process.argv);
-console.log(process.execArgv);
-console.log(process.execPath);
+
 describe('purify argv', () => {
   it("removes the first argument if it's execPath", () => {
     const [options, args, unknownOptions] = parse(
