@@ -86,10 +86,6 @@ default value < package.json < .rcfile < user command line arguments
 
 type-args does what you want by accepting the ...third arguments.
 
-## Examples
-
-
-
 ## License
 
 MIT © [Zhang Kai Yu][license-url]
